@@ -1,0 +1,47 @@
+name: Formula tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  install:
+    name: ${{ matrix.name }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: macOS 14 / arm64
+            runner: macos-14
+          - name: Ubuntu / x86_64
+            runner: ubuntu-24.04
+            container:
+              image: ghcr.io/homebrew/brew:main
+              options: --privileged
+    runs-on: ${{ matrix.runner }}
+    container: ${{ fromJSON(toJSON(matrix.container)) }}
+    timeout-minutes: 75
+
+    steps:
+      - name: Set up Homebrew and tap
+        uses: Homebrew/actions/setup-homebrew@18fcb8e3e06b4247c676c506750dc95ea7226479 # 2026.07.13.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check tap syntax
+        run: brew test-bot --only-tap-syntax
+
+      - name: Build and install alog2media
+        run: brew install --build-from-source cbenjamin23/tap/alog2media
+
+      - name: Test installed formula
+        run: |
+          brew test cbenjamin23/tap/alog2media
+          brew linkage --test cbenjamin23/tap/alog2media
+          alog2media --version | grep -F '0.3.1'
