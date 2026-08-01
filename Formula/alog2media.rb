@@ -54,5 +54,27 @@ class Alog2media < Formula
 
   test do
     assert_match version.to_s, shell_output("#{bin}/alog2media --version")
+
+    (testpath/"smoke.alog").write <<~ALOG
+      %%%% LOGSTART 1000.0
+      0.00000 DB_TIME MOOSDB 1000.0
+      0.00001 REGION_INFO pMarineViewer lat_datum=42,lon_datum=-71,zoom=1,pan_x=0,pan_y=0
+      0.00002 NODE_REPORT_LOCAL pNodeReporter NAME=alpha,TYPE=kayak,COLOR=yellow,LENGTH=4
+      0.00003 NAV_X uSimMarine -10
+      0.00004 NAV_Y uSimMarine -5
+      0.00005 NAV_HEADING uSimMarine 90
+      0.50000 VIEW_POINT pMarineViewer x=0,y=0,label=ORIGIN,vertex_color=red
+      1.00003 NAV_X uSimMarine 10
+      1.00004 NAV_Y uSimMarine 5
+      1.00005 NAV_HEADING uSimMarine 45
+    ALOG
+    if OS.linux?
+      ENV["EGL_PLATFORM"] = "surfaceless"
+      ENV["LIBGL_ALWAYS_SOFTWARE"] = "1"
+    end
+    system bin/"alog2media", testpath/"smoke.alog", "--map", "none",
+           "--at", "0.5", "--view", "fit", "--size", "64x64",
+           "--output", testpath/"smoke.png"
+    assert_path_exists testpath/"smoke.png"
   end
 end
