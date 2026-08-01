@@ -39,11 +39,23 @@ class Alog2media < Formula
         cmake_args << "-DOPENGL_gl_LIBRARY=#{MacOS.sdk_path}/System/Library/Frameworks/OpenGL.framework/OpenGL.tbd"
       elsif OS.linux?
         mesa = Formula["mesa"]
+        linux_opengl_find = [
+          "find_package(OpenGL REQUIRED)",
+          "find_path(EGL_INCLUDE_DIR NAMES EGL/egl.h REQUIRED)",
+          "find_library(EGL_LIBRARY NAMES EGL REQUIRED)",
+        ].join("\n")
+        inreplace buildpath/"CMakeLists.txt",
+                  "find_package(OpenGL REQUIRED COMPONENTS OpenGL EGL)",
+                  linux_opengl_find
+        inreplace buildpath/"CMakeLists.txt",
+                  "OpenGL::OpenGL OpenGL::EGL",
+                  'OpenGL::GL "${EGL_LIBRARY}"'
         cmake_args += %W[
+          -DOpenGL_GL_PREFERENCE=LEGACY
           -DOPENGL_INCLUDE_DIR=#{mesa.opt_include}
-          -DOPENGL_EGL_INCLUDE_DIR=#{mesa.opt_include}
-          -DOPENGL_opengl_LIBRARY=#{mesa.opt_lib}/libOpenGL.so
-          -DOPENGL_egl_LIBRARY=#{mesa.opt_lib}/libEGL.so
+          -DOPENGL_gl_LIBRARY=#{mesa.opt_lib}/libGL.so
+          -DEGL_INCLUDE_DIR=#{mesa.opt_include}
+          -DEGL_LIBRARY=#{mesa.opt_lib}/libEGL.so
         ]
       end
       system "cmake", "-S", buildpath, "-B", alog2media_build, *cmake_args
