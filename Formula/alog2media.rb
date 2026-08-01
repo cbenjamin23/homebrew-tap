@@ -24,6 +24,9 @@ class Alog2media < Formula
   def install
     resource("moos-ivp").stage do
       moos_ivp_root = Pathname.pwd
+      inreplace "build-moos.sh",
+                '"-DPROJ4_LIB_PATH=${PROJ4_LIB_DIR}"',
+                '"-DPROJ4_LIB_PATH=${PROJ4_LIB_DIR}" "-DPROJ4_LIBRARY=${PROJ4_LIB_DIR}/libproj.a"'
       system "./build.sh", "-j#{ENV.make_jobs}"
 
       alog2media_build = buildpath/"brew-build"
