@@ -30,11 +30,15 @@ class Alog2media < Formula
       system "./build.sh", "-j#{ENV.make_jobs}"
 
       alog2media_build = buildpath/"brew-build"
-      system "cmake", "-S", buildpath, "-B", alog2media_build,
-             *std_cmake_args,
-             "-DBUILD_TESTING=OFF",
-             "-DCMAKE_INSTALL_LIBDIR=lib/alog2media",
-             "-DMOOS_IVP_ROOT=#{moos_ivp_root}"
+      cmake_args = std_cmake_args + %W[
+        -DBUILD_TESTING=OFF
+        -DCMAKE_INSTALL_LIBDIR=lib/alog2media
+        -DMOOS_IVP_ROOT=#{moos_ivp_root}
+      ]
+      if OS.mac?
+        cmake_args << "-DOPENGL_gl_LIBRARY=#{MacOS.sdk_path}/System/Library/Frameworks/OpenGL.framework/OpenGL.tbd"
+      end
+      system "cmake", "-S", buildpath, "-B", alog2media_build, *cmake_args
       system "cmake", "--build", alog2media_build, "--parallel", ENV.make_jobs
       system "cmake", "--install", alog2media_build
     end
