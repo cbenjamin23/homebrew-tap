@@ -1,8 +1,8 @@
 class Alog2media < Formula
   desc "Render MOOS-IvP alog scenes to MP4, GIF, or PNG without a window"
   homepage "https://github.com/cbenjamin23/alog2media"
-  url "https://github.com/cbenjamin23/alog2media/archive/refs/tags/v0.3.1.tar.gz"
-  sha256 "dba8ac0eef3034914c124fdda37a687b5d5ee3433894f9f9c6ff33a654377da5"
+  url "https://github.com/cbenjamin23/alog2media/archive/refs/tags/v0.3.2.tar.gz"
+  sha256 "a66442b44b631ec8affa40689d1f21a82bf5dad49251afa41fffc4edecd37f7c"
   license "GPL-3.0-or-later"
   head "https://github.com/cbenjamin23/alog2media.git", branch: "main"
 
@@ -70,7 +70,7 @@ class Alog2media < Formula
     (testpath/"smoke.alog").write <<~ALOG
       %%%% LOGSTART 1000.0
       0.00000 DB_TIME MOOSDB 1000.0
-      0.00001 REGION_INFO pMarineViewer lat_datum=42,lon_datum=-71,zoom=1,pan_x=0,pan_y=0
+      0.00001 REGION_INFO pMarineViewer lat_datum=42,lon_datum=-71,img_file=forrest19.tif,zoom=1,pan_x=0,pan_y=0
       0.00002 NODE_REPORT_LOCAL pNodeReporter NAME=alpha,TYPE=kayak,COLOR=yellow,LENGTH=4
       0.00003 NAV_X uSimMarine -10
       0.00004 NAV_Y uSimMarine -5
@@ -84,8 +84,10 @@ class Alog2media < Formula
       ENV["EGL_PLATFORM"] = "surfaceless"
       ENV["LIBGL_ALWAYS_SOFTWARE"] = "1"
     end
-    system bin/"alog2media", testpath/"smoke.alog", "--map", "none",
-           "--at", "0.5", "--view", "fit", "--size", "64x64",
+    assert_path_exists pkgshare/"maps/forrest19.tif"
+    assert_path_exists pkgshare/"maps/forrest19.info"
+    system bin/"alog2media", testpath/"smoke.alog", "--at", "0.5",
+           "--view", "fit", "--size", "64x64",
            "--output", testpath/"smoke.png"
     assert_path_exists testpath/"smoke.png"
   end
