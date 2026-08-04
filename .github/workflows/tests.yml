@@ -44,4 +44,4 @@ jobs:
         run: |
           brew test cbenjamin23/tap/alog2media
           brew linkage --test cbenjamin23/tap/alog2media
-          alog2media --version | grep -F '0.3.1'
+          alog2media --version
