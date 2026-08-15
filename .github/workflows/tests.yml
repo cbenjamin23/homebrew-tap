@@ -30,7 +30,7 @@ jobs:
 
     steps:
       - name: Set up Homebrew and tap
-        uses: Homebrew/actions/setup-homebrew@18fcb8e3e06b4247c676c506750dc95ea7226479 # 2026.07.13.1
+        uses: Homebrew/actions/setup-homebrew@b35a29a0f83ee8b8ca07b219fc8db3d7bb88ab49 # 2026.08.10.2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
