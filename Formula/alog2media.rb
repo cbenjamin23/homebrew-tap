@@ -1,8 +1,8 @@
 class Alog2media < Formula
   desc "Render MOOS-IvP alog scenes to MP4, GIF, or PNG without a window"
   homepage "https://github.com/cbenjamin23/alog2media"
-  url "https://github.com/cbenjamin23/alog2media/archive/refs/tags/v0.3.4.tar.gz"
-  sha256 "f2a755677d30e0f6da3bffe5932d471e8c697b9312cbc4e67555a938d4898103"
+  url "https://github.com/cbenjamin23/alog2media/archive/refs/tags/v0.3.5.tar.gz"
+  sha256 "190c1bc1e87da8f0c78fa06a08cd6fa72e0a1463ba2c9245cca6c227823372cc"
   license "GPL-3.0-or-later"
   head "https://github.com/cbenjamin23/alog2media.git", branch: "main"
 
